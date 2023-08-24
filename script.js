@@ -1,6 +1,8 @@
 const itemForm = document.getElementById("item-form");
 const itemInput = document.getElementById("item-input");
 const itemList = document.getElementById("item-list");
+const itemClear= document.getElementById("clear");
+const itemFilter=document.getElementById("filter")
 
 function addItem(e){
     e.preventDefault();
@@ -13,12 +15,12 @@ function addItem(e){
     //create list item
     const li =document.createElement("li");
     li.appendChild(document.createTextNode(newItem));
-    console.log(li);
-
     const button= createButton("remove-item btn-link text-red");
     li.appendChild(button);
     itemList.appendChild(li);
-    itemInput.value =''
+    checkUI();
+    itemInput.value ='' ;
+   
 }
 function createButton(classes){
     const button=document.createElement("button");
@@ -33,5 +35,34 @@ function createIcon(classes){
     return icon;
 }
 
+function removeItem(e){
+    if(e.target.parentElement.classList.contains("remove-item")){
+      e.target.parentElement.parentElement.remove()
+    }
+
+}
+function clearItem(e){
+    // itemList.innerHTML=''; also works but 2nd way looks smarter
+    while(itemList.firstChild){
+    itemList.removeChild(itemList.firstChild);
+    }
+}
+
+function checkUI(){
+    itemInput.value = '';
+    const items=itemList.querySelectorAll("li");
+     if(items.length === 0 ){
+     itemClear.style.display="none"
+     itemFilter.style.display="none"
+     }else{
+         itemClear.style.display="block"
+         itemFilter.style.display="block"
+     }
+}
+
 //Event Listeners
 itemForm.addEventListener("submit", addItem)
+itemList.addEventListener("click", removeItem)
+itemClear.addEventListener("click", clearItem)
+
+ checkUI();
