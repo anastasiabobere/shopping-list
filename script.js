@@ -4,6 +4,7 @@ const itemList = document.getElementById("item-list");
 const itemClear= document.getElementById("clear");
 const itemFilter=document.getElementById("filter")
 
+//adding item
 function addItem(e){
     e.preventDefault();
    const newItem= itemInput.value
@@ -35,9 +36,13 @@ function createIcon(classes){
     return icon;
 }
 
+//removing items 
 function removeItem(e){
     if(e.target.parentElement.classList.contains("remove-item")){
-      e.target.parentElement.parentElement.remove()
+        if(confirm("Are you sure?")){
+            e.target.parentElement.parentElement.remove()
+            checkUI();
+        }
     }
 
 }
@@ -46,8 +51,25 @@ function clearItem(e){
     while(itemList.firstChild){
     itemList.removeChild(itemList.firstChild);
     }
+    checkUI();
 }
 
+function filterItem(e){
+    const items=itemList.querySelectorAll("li");
+    const text=e.target.value.toLowerCase();
+    
+    items.forEach(item=>{
+        const itemName=item.firstChild.textContent.toLowerCase();
+
+        if(itemName.indexOf(text)  != -1){
+         item.style.display="flex";
+        }else{
+            item.style.display="none";
+        }
+    });
+
+}
+//check if there are items
 function checkUI(){
     itemInput.value = '';
     const items=itemList.querySelectorAll("li");
@@ -64,5 +86,6 @@ function checkUI(){
 itemForm.addEventListener("submit", addItem)
 itemList.addEventListener("click", removeItem)
 itemClear.addEventListener("click", clearItem)
+itemFilter.addEventListener("input", filterItem)
 
  checkUI();
