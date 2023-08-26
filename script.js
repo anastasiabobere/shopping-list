@@ -64,29 +64,42 @@ function getItemsFromStorage(){
     
     let itemsFromStorage;
 
-    if(localStorage.getItem('items')===null){
+    if(localStorage.getItem('item')===null){
         itemsFromStorage =[];
     }else{
-        itemsFromStorage=JSON.parse(localStorage.getItem("items"))
+        itemsFromStorage=JSON.parse(localStorage.getItem("item"))
     }
 return itemsFromStorage;
 }
-
-//removing items 
-function removeItem(e){
+function onClickItem(e){
     if(e.target.parentElement.classList.contains("remove-item")){
-        if(confirm("Are you sure?")){
-            e.target.parentElement.parentElement.remove()
-            checkUI();
-        }
+        removeItem(e.target.parentElement.parentElement);
     }
+}
+//removing items 
+function removeItem(item){
+  if(confirm("Are you sure?")){
+    //remove from DOM
+    item.remove();
 
+   //Remove from storage
+   removeItemFromStorage(item.textContent);
+    checkUI();
+}   
+}
+function removeItemFromStorage(item){
+ let itemsFromStorage=getItemsFromStorage();
+
+  //filter item to be removed
+ itemsFromStorage=itemsFromStorage.filter((i)=> i !== item)
+ localStorage.setItem("item",JSON.stringify(itemsFromStorage))
 }
 function clearItem(e){
     // itemList.innerHTML=''; also works but 2nd way looks smarter
     while(itemList.firstChild){
     itemList.removeChild(itemList.firstChild);
     }
+ localStorage.removeItem("item")
     checkUI();
 }
 
@@ -118,12 +131,15 @@ function checkUI(){
      }
 }
 
-//Event Listeners
+// Intitalize app
+function init(){
+    //Event Listeners
 itemForm.addEventListener("submit", onAddItemSubmit)
-itemList.addEventListener("click", removeItem)
+itemList.addEventListener("click", onClickItem)
 itemClear.addEventListener("click", clearItem)
 itemFilter.addEventListener("input", filterItem)
 document.addEventListener("DOMContentLoaded",displayItems)
 
  checkUI();
- 
+}
+ init();
